@@ -31,12 +31,15 @@ struct IntCodeVM
 {
 	IntCodeVM(const std::string& file_path)
 	{
-		get_input(memory, file_path);	
+		get_input(memory, file_path);
 	}
 
 	// For use after the ICVM has been made
 	void set_state(const std::string& file_path)
 	{
+		memory.clear();
+		instruction_pointer = 0;
+
 		get_input(memory, file_path);
 	}
 
@@ -112,7 +115,7 @@ int task_one()
 {
 	IntCodeVM icvm("input.txt");
 	// Hard-coded start parameters:
-	icvm.set_start_parameters(12, 2);
+	icvm.set_input(12, 2);
 	return icvm.run();
 }
 
@@ -121,7 +124,6 @@ int task_one()
 int task_two()
 {
 	IntCodeVM icvm("input.txt");
-
 	for (size_t noun = 0; noun < 100; ++noun)
 	{
 		for (size_t verb = 0; verb < 100; ++verb)
@@ -129,7 +131,12 @@ int task_two()
 			icvm.set_state("input.txt");
 			icvm.set_input(noun, verb);
 
-			if (icvm.run() == 19690720) return 100 * noun + verb;
+			int output = icvm.run();
+
+			if (output == 19690720)
+			{
+				return 100 * noun + verb;
+			}
 		}
 	}
 
