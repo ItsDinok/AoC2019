@@ -34,7 +34,13 @@ struct IntCodeVM
 		get_input(memory, file_path);	
 	}
 
-	void set_start_parameters(int noun, int verb)
+	// For use after the ICVM has been made
+	void set_state(const std::string& file_path)
+	{
+		get_input(memory, file_path);
+	}
+
+	void set_input(int noun, int verb)
 	{
 		memory[1] = noun;
 		memory[2] = verb;
@@ -112,15 +118,27 @@ int task_one()
 
 // Find the position one and two values that prodduce the output: 19690720
 // Position one is called the noun, position two is called the verb
-// There HAS to be a better way to do this than naive search
 int task_two()
 {
 	IntCodeVM icvm("input.txt");
-	return icvm.run();
+
+	for (size_t noun = 0; noun < 100; ++noun)
+	{
+		for (size_t verb = 0; verb < 100; ++verb)
+		{
+			icvm.set_state("input.txt");
+			icvm.set_input(noun, verb);
+
+			if (icvm.run() == 19690720) return 100 * noun + verb;
+		}
+	}
+
+	return -1;
 }
 
 int main()
 {
 	std::cout << "Task one: " << task_one() << std::endl;
+	std::cout << "Task two: " << task_two() << std::endl;
 	return 0;
 }
